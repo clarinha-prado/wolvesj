@@ -18,6 +18,7 @@ export function Age() {
             mb={["1rem", "2rem"]}
             mt={["1rem", "1.5rem", "1.5rem"]}
             align={['start', 'center']}
+            justify="center"
         >
 
             { genders.map((value, index) => {
