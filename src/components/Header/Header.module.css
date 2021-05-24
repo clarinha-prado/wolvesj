@@ -1,0 +1,180 @@
+/*********************************** filter.ctp ***********************************/
+
+.title {
+    text-align: center;
+    background-color: #e6e6ff;
+    border-top: 1px solid #8CE3D5;
+    box-shadow: -5px -2px 5px gray;
+}
+
+.checkboxContainer {
+    max-width: 1000px;
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+}
+
+.checkboxItemBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.checkboxItem {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.checkboxItem>label {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.checkboxItemIdade {
+    padding: 0;
+}
+
+.checkboxItemIdade>label {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 1.6rem;
+    text-align: center;
+}
+
+.containerIdade {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20%;
+    width: auto;
+}
+
+.header {
+    background-image: linear-gradient(to right, #360033, #0B717B);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    width: 60%;
+}
+
+.logoAmais {
+    padding-bottom: 0.3rem;
+    padding-right: 0.3rem;
+    width: 22vw;
+    align-self: flex-end;
+}
+
+.iconFilter {
+    color:white;
+    width:11vw;
+    height:auto;
+    margin-right: 1vw;
+}
+
+.containerGenero {
+    width: 50%;
+}
+
+.notFound {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.notFound > div {
+    padding: 1rem 1.5rem 0rem 1.5rem;
+    background-color:#E7EFEE; 
+}
+
+.notFound > div > p {
+    font-size:1rem;
+    text-align: center;
+}
+
+.description {
+    font-size: 0.78rem;
+    color: gray;
+    display: flex;
+    justify-content: center;
+    margin-top: -15px;
+    margin-bottom: 1rem;
+}
+
+/*********************************** telas grandes ***********************************/
+
+@media screen and (min-width: 720px) {
+    .checkboxContainer {
+        width: 80%;
+    }
+
+    .checkboxItem>label {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .checkboxItemIdade>label {
+        font-size: 1.2rem;
+        line-height: 1.8rem;
+    }
+
+    .containerIdade {
+        flex-direction: row;
+        margin: auto;
+    }
+
+    .checkboxItemIdade {
+        padding: 1rem;
+    }
+
+    .logo {
+        width: 35%;
+    }
+
+    .logoAmais {
+        width: 12vw;
+    }
+
+    .containerGenero {
+        width: 30%;
+    }
+
+    .iconFilter {
+        width:8vw;
+        height:auto;
+        margin-right: 1vw;
+    } 
+
+    .notFound {
+        flex-direction: row;
+        align-items: stretch;
+        max-width: 80%;
+        margin: auto;
+    }  
+
+    .notFound > img {
+        width:50%;
+    }
+
+    .notFound > div {
+        display: flex;
+    flex-direction: column;
+    justify-content: center;
+    }
+
+    .notFound > div > p {
+    font-size:1.2rem;
+    font-weight: bold;
+    }
+
+    .description {
+        font-size: 0.84rem;
+        margin-top: -11px;
+    }
+}
