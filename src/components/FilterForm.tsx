@@ -1,6 +1,7 @@
 import { FilterTitle } from './FilterTitle';
 import { Size } from './Size';
 import { Gender } from './Gender';
+import { Age } from './Age';
 
 export function FilterForm() {
 
@@ -10,6 +11,8 @@ export function FilterForm() {
             <Size />
             <FilterTitle name="Gênero" />
             <Gender />
+            <FilterTitle name="Idade" />
+            <Age />
         </>
     );
 

@@ -14,8 +14,8 @@ export function FilterTitle({ name }: FilterTitleProps) {
             borderTopStyle='solid'
             borderTopColor='#8CE3D5'
             boxShadow='md'
-            fontSize='2.5rem'
-            lineHeight='2.5rem'
+            fontSize='2.6rem'
+            lineHeight='3.2rem'
             mt='0.2rem'
         >
             {name}
