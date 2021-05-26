@@ -1,25 +1,24 @@
-import { Button, Box } from "@chakra-ui/react"
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button, Box, Center } from "@chakra-ui/react"
+import { useForm } from 'react-hook-form';
+import { useRouter } from "next/router";
 
 import { FilterTitle } from './FilterTitle';
 import { Size } from './Size';
 import { Gender } from './Gender';
 import { Age } from './Age';
-
-type FilterAnimalsFormData = {
-    size: string,
-    gender: string,
-    age: string
-}
+import { httpClientApi } from '../api/httpClientApi';
 
 export function FilterForm() {
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
-    const onSubmit = data => console.log(data);
+    const { register, handleSubmit } = useForm();
+    const router = useRouter();
 
-    /*     const handleFilter: SubmitHandler<FilterAnimalsFormData> = async (values) => {
-            console.log('na função handleFilter(): ' + values);
-        } */
+    const onSubmit = data => {
+        console.log(data);
+        // const response = await httpClientApi.post(....
+
+        router.push("/animals");
+    }
 
     return (
         <>
@@ -28,13 +27,15 @@ export function FilterForm() {
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <FilterTitle name="Porte" />
-                <Size />
+                <Size registerParam={register} />
                 <FilterTitle name="Gênero" />
-                <Gender />
+                <Gender registerParam={register} />
                 <FilterTitle name="Idade" />
-                <Age />
+                <Age registerParam={register} />
 
-                <Button type="submit" colorScheme="blue">Button</Button>
+                <Center>
+                    <Button type="submit" colorScheme="blue">Buscar</Button>
+                </Center>
             </Box>
         </>
     );

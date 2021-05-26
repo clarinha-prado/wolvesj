@@ -1,12 +1,16 @@
 import { Center, Text, Flex } from "@chakra-ui/react";
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
+interface GenderProps {
+    registerParam: UseFormRegister<FieldValues>,
+}
 
 const genders = [
-    ['/img/female.png', 'Fêmea', 'F'],
-    ['/img/male.png', 'Macho', 'M'],
+    ['/img/female.png', 'Fêmea', 'Female'],
+    ['/img/male.png', 'Macho', 'Male'],
 ];
 
-export function Gender() {
+export function Gender({ registerParam }: GenderProps) {
 
     return (
         <Center
@@ -23,7 +27,13 @@ export function Gender() {
                     <Flex direction='column' ml={gap} key={index}>
                         <img src={value[0]} alt={value[1]} />
                         <Flex wrap='nowrap' align='baseline' justify='center'>
-                            <input name={value[2]} type="checkbox" id={value[2]} value="1" />
+                            <input
+                                name={value[2]}
+                                type="checkbox"
+                                id={value[2]}
+                                value="1"
+                                {...registerParam(value[2])}
+                            />
                             <Text
                                 textAlign='center'
                                 color='#4d4d4d'

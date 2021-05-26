@@ -1,5 +1,9 @@
 import { Center, Text, Flex } from "@chakra-ui/react";
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
+interface SizeProps {
+    registerParam: UseFormRegister<FieldValues>,
+}
 
 const sizes = [
     ['/img/p.png', 'Porte pequeno', 'Pequeno', 'Até 10kg', 'P'],
@@ -7,7 +11,7 @@ const sizes = [
     ['/img/g.png', 'Porte Grande', 'Grande', 'Acima de 25kg', 'G']
 ];
 
-export function Size() {
+export function Size({ registerParam }: SizeProps) {
 
     return (
         <Center m="0.2rem" mb="2rem">
@@ -20,7 +24,13 @@ export function Size() {
                         <img src={value[0]} alt={value[1]} />
                         <Flex direction='column'>
                             <Flex wrap='nowrap' align='baseline' justify='center'>
-                                <input name={value[4]} type="checkbox" id={value[4]} value="1" />
+                                <input
+                                    name={value[4]}
+                                    type="checkbox"
+                                    id={value[4]}
+                                    value="1"
+                                    {...registerParam(value[4])}
+                                />
                                 <Text
                                     textAlign='center'
                                     color='#4d4d4d'

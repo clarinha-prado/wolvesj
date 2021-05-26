@@ -1,4 +1,9 @@
 import { Text, Flex } from "@chakra-ui/react";
+import { FieldValues, UseFormRegister } from 'react-hook-form';
+
+interface AgeProps {
+    registerParam: UseFormRegister<FieldValues>,
+}
 
 
 const genders = [
@@ -8,7 +13,7 @@ const genders = [
     ['Acima de 10 anos', 'acima10']
 ];
 
-export function Age() {
+export function Age({ registerParam }: AgeProps) {
 
     return (
         <Flex
@@ -37,6 +42,7 @@ export function Age() {
                             type="checkbox"
                             id={value[1]}
                             value="1"
+                            {...registerParam(value[1])}
                         />
                         <Text
                             textAlign='left'
