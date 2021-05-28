@@ -2,7 +2,27 @@
 import { FiHeart } from 'react-icons/fi';
 import { Box, Text, Image, Flex } from "@chakra-ui/react";
 
-export function AnimalBox() {
+interface AnimalInterface {
+    animal: {
+        id: number;
+        nm_animal: string;
+        dt_nasc: Date;
+        dt_acolh: Date;
+        especie: number;
+        raca: string;
+        sexo: number;
+        pelagem: string;
+        porte: number;
+        caracteristicas: string;
+        castrado: number;
+        historia: string;
+        localizacao: string;
+        situacao: number;
+        apelidos: string;
+    }
+}
+
+export function AnimalBox({ animal }: AnimalInterface) {
     return (
         <Flex
             direction="column"
@@ -32,8 +52,8 @@ export function AnimalBox() {
                 color="#991143"
                 textDecoration="none"
             >
-                Nome
-        </Text>
+                {animal.nm_animal}
+            </Text>
             <Flex
                 justify="center"
                 align="center"

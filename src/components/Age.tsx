@@ -5,7 +5,6 @@ interface AgeProps {
     registerParam: UseFormRegister<FieldValues>,
 }
 
-
 const genders = [
     ['Até 1 ano', 'ate1'],
     ['De 1 a 5 anos', 'de1a5'],

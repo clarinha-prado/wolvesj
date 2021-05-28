@@ -6,7 +6,6 @@ import { FilterTitle } from './FilterTitle';
 import { Size } from './Size';
 import { Gender } from './Gender';
 import { Age } from './Age';
-import { httpClientApi } from '../api/httpClientApi';
 
 export function FilterForm() {
 
@@ -17,7 +16,7 @@ export function FilterForm() {
         console.log(data);
         // const response = await httpClientApi.post(....
 
-        router.push("/animals");
+        router.push("/animais");
     }
 
     return (
