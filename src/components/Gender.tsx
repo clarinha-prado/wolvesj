@@ -6,8 +6,8 @@ interface GenderProps {
 }
 
 const genders = [
-    ['/img/female.png', 'Fêmea', 'Female'],
-    ['/img/male.png', 'Macho', 'Male'],
+    ['/img/female.png', 'Fêmea', 'female'],
+    ['/img/male.png', 'Macho', 'male'],
 ];
 
 export function Gender({ registerParam }: GenderProps) {

@@ -6,9 +6,9 @@ interface SizeProps {
 }
 
 const sizes = [
-    ['/img/p.png', 'Porte pequeno', 'Pequeno', 'Até 10kg', 'P'],
-    ['/img/m.png', 'Porte Médio', 'Médio', 'De 10kg a 25kg', 'M'],
-    ['/img/g.png', 'Porte Grande', 'Grande', 'Acima de 25kg', 'G']
+    ['/img/p.png', 'Porte pequeno', 'Pequeno', 'Até 10kg', 'p'],
+    ['/img/m.png', 'Porte Médio', 'Médio', 'De 10kg a 25kg', 'm'],
+    ['/img/g.png', 'Porte Grande', 'Grande', 'Acima de 25kg', 'g']
 ];
 
 export function Size({ registerParam }: SizeProps) {

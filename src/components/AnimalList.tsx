@@ -26,11 +26,10 @@ interface AnimalInterface {
     apelidos: string;
 }
 
-export default function Animais({ data }: AnimaisProps) {
+export function AnimalList({ data }: AnimaisProps) {
 
     return (
         <>
-            <Header />
             <Center
                 bgImage="url('/img/y.jpg')"
                 bgPosition="center"
