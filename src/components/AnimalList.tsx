@@ -5,28 +5,17 @@ import { AnimalBox } from '../components/AnimalBox';
 import { GetServerSidePropsContext } from 'next';
 
 interface AnimaisProps {
-    data: AnimalInterface[];
+    queryResponse: AnimalInterface[];
 }
 
 interface AnimalInterface {
     id: number;
     nm_animal: string;
-    dt_nasc: Date;
-    dt_acolh: Date;
-    especie: number;
-    raca: string;
-    sexo: number;
-    pelagem: string;
+    dt_provavel_nasc: Date;
     porte: number;
-    caracteristicas: string;
-    castrado: number;
-    historia: string;
-    localizacao: string;
-    situacao: number;
-    apelidos: string;
 }
 
-export function AnimalList({ data }: AnimaisProps) {
+export function AnimalList({ queryResponse }: AnimaisProps) {
 
     return (
         <>
@@ -45,7 +34,7 @@ export function AnimalList({ data }: AnimaisProps) {
                     justify='space-around'
                 >
 
-                    {data.map((item) => (
+                    {queryResponse.map((item) => (
                         <AnimalBox key={item.id} animal={item} />
                     ))}
 

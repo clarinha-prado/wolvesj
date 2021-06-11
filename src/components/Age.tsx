@@ -2,17 +2,19 @@ import { Text, Flex } from "@chakra-ui/react";
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 interface AgeProps {
+    handler: (index: number) => void;
+    values: boolean[];
     registerParam: UseFormRegister<FieldValues>,
 }
 
-const genders = [
+const ages = [
     ['Até 1 ano', 'ate1'],
     ['De 1 a 5 anos', 'de1a5'],
     ['De 5 a 10 anos', 'de5a10'],
     ['Acima de 10 anos', 'acima10']
 ];
 
-export function Age({ registerParam }: AgeProps) {
+export function Age({ handler, values, registerParam }: AgeProps) {
 
     return (
         <Flex
@@ -25,7 +27,7 @@ export function Age({ registerParam }: AgeProps) {
             justify="center"
         >
 
-            { genders.map((value, index) => {
+            { ages.map((value, index) => {
                 let gap = ['0'];
                 if (index !== 3) { gap = ['1rem', '1.3rem', '2rem']; }
                 return (
@@ -41,6 +43,9 @@ export function Age({ registerParam }: AgeProps) {
                             type="checkbox"
                             id={value[1]}
                             value="1"
+                            checked={values[index]}
+                            onClick={() => handler(index)}
+                            onChange={e => { }}
                             {...registerParam(value[1])}
                         />
                         <Text

@@ -6,19 +6,8 @@ interface AnimalInterface {
     animal: {
         id: number;
         nm_animal: string;
-        dt_nasc: Date;
-        dt_acolh: Date;
-        especie: number;
-        raca: string;
-        sexo: number;
-        pelagem: string;
+        dt_provavel_nasc: Date;
         porte: number;
-        caracteristicas: string;
-        castrado: number;
-        historia: string;
-        localizacao: string;
-        situacao: number;
-        apelidos: string;
     }
 }
 

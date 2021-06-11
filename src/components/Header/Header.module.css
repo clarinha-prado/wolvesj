@@ -61,13 +61,15 @@
 }
 
 .logo {
-    width: 60%;
+    width: 50%;
+    margin-right: 0.6rem;
 }
 
 .logoAmais {
     padding-bottom: 0.3rem;
+    margin-left: 0.6rem;
     padding-right: 0.3rem;
-    width: 22vw;
+    width: 20vw;
     align-self: flex-end;
 }
 
@@ -107,6 +109,23 @@
     margin-bottom: 1rem;
 }
 
+/*********************************** telas médias ***********************************/
+
+@media screen and (min-width: 480px) {
+    
+    .logo {
+        width: 45%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: 5px;
+        margin-right: 1rem;
+    }
+}
+
+.logoAmais {
+    width: 22vw;
+}
+
 /*********************************** telas grandes ***********************************/
 
 @media screen and (min-width: 720px) {
@@ -135,6 +154,10 @@
 
     .logo {
         width: 35%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+        margin-right: 5rem;
     }
 
     .logoAmais {
@@ -176,5 +199,18 @@
     .description {
         font-size: 0.84rem;
         margin-top: -11px;
+    }
+}
+
+/*********************************** telas gigantes ***********************************/
+
+@media screen and (min-width: 900px) {
+    
+    .logo {
+        width: 25%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+        margin-right: 5rem;
     }
 }
