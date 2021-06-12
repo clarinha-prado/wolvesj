@@ -1,5 +1,5 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { wolvesbckApi } from "../api/wolvesbckApi";
 import { Button, Box, Center, Text } from "@chakra-ui/react";
 import { useForm } from 'react-hook-form';
 
@@ -9,6 +9,7 @@ import { Gender } from '../components/Gender';
 import { Age } from '../components/Age';
 import { Header } from '../components/Header';
 import { AnimalList } from "../components/AnimalList";
+import { Pagin } from '../components/Pagin';
 
 interface FilterFormData {
     p: string;
@@ -22,17 +23,20 @@ interface FilterFormData {
     acima10: string;
 }
 
-interface AnimalList {
-    content: AnimalDTO[];
-    first: true;
-    last: false;
-    number: 0;
-    totalElements: 32;
-    totalPages: 8;
+interface IAnimalList {
+    data: {
+        content: AnimalDTO[];
+        first: boolean;
+        last: boolean;
+        number: number;
+        totalElements: number;
+        totalPages: number;
+        numberOfElements: number;
+    };
 }
 
 interface AnimalDTO {
-    dt_provavel_nasc: string;
+    dt_provavel_nasc: Date;
     id: number;
     nm_animal: string;
     porte: number;
@@ -41,12 +45,14 @@ interface AnimalDTO {
 export default function Filter() {
 
     const [showForm, setShowForm] = useState(true);
-    const [animals, setAnimals] = useState<AnimalList>([]);
+    const [animals, setAnimals] = useState<IAnimalList>({ data: null });
     const [selectAll, setSelectAll] = useState(false)
 
     const [sizes, setSizes] = useState([false, false, false]);
     const [genders, setGenders] = useState([false, false]);
     const [ages, setAges] = useState([false, false, false, false]);
+
+    const [currentPage, setCurrentPage] = useState(1);
 
     // obtém do useForm() o register para definir o nome dos campos do formulário
     // e o handleSubmit para chamar uma função q receberá os dados do formulário
@@ -56,12 +62,27 @@ export default function Filter() {
     const onSubmit = (filterFormData: FilterFormData) => {
         console.log(filterFormData);
 
-        axios.post('http://localhost:8080/animais', filterFormData)
-            .then(response => {
+        console.log("currentPage=", currentPage)
+        wolvesbckApi.post('/animais', filterFormData, {
+            params: { newPage: currentPage - 1 }
+        }).then(
+            response => {
                 console.log(response.data)
-                setAnimals(response.data);
+                setAnimals(response);
                 setShowForm(false);
             });
+    }
+
+    // effects
+    useEffect(() => {
+        if (!showForm) {
+            handleSubmit(onSubmit)();
+        }
+    }, [currentPage]);
+
+    const requestNewPage = (newPage: number) => {
+        console.log("carregar página ", newPage);
+        setCurrentPage(newPage);
     }
 
     const showAll = (): void => {
@@ -133,8 +154,8 @@ export default function Filter() {
                 </>
                 :
                 <>
-                    <AnimalList queryResponse={animals.content} />
-                Página 1 de 7, mostrando 20 animais em um total de 127.
+                    <AnimalList queryResponse={animals.data.content} />
+                    <Pagin page={animals.data} requestNewPage={requestNewPage} />
                 </>
             }
         </>

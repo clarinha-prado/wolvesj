@@ -5,13 +5,13 @@ import { AnimalBox } from '../components/AnimalBox';
 import { GetServerSidePropsContext } from 'next';
 
 interface AnimaisProps {
-    queryResponse: AnimalInterface[];
+    queryResponse: AnimalDTO[];
 }
 
-interface AnimalInterface {
+interface AnimalDTO {
+    dt_provavel_nasc: Date;
     id: number;
     nm_animal: string;
-    dt_provavel_nasc: Date;
     porte: number;
 }
 
@@ -21,8 +21,9 @@ export function AnimalList({ queryResponse }: AnimaisProps) {
         <>
             <Center
                 bgImage="url('/img/y.jpg')"
-                bgPosition="center"
-                bgRepeat={["repeat", "no-repeat"]}
+                bgPosition={["unset", "center"]}
+                bgRepeat="repeat"
+                bgSize={["auto", "cover"]}
                 h="auto"
                 w="100%"
                 pr="1rem"

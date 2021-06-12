@@ -2,6 +2,8 @@
 import { FiHeart } from 'react-icons/fi';
 import { Box, Text, Image, Flex } from "@chakra-ui/react";
 
+import config from '../../wolvesj-config.json';
+
 interface AnimalInterface {
     animal: {
         id: number;
@@ -21,7 +23,7 @@ export function AnimalBox({ animal }: AnimalInterface) {
             mb={['2rem', '3.3rem']}
         >
             <Image
-                src="/img/placeholder_rosto.jpg"
+                src={`${config.photo_directory}/${animal.id}/0.jpg`}
                 alt="Nome"
                 borderRadius="full"
                 mt="1rem"
@@ -52,11 +54,11 @@ export function AnimalBox({ animal }: AnimalInterface) {
                 mt="-0.3rem"
             >
                 3 anos
-            <Box ml="0.4rem" mr="0.4rem">
+                <Box ml="0.4rem" mr="0.4rem">
                     <FiHeart />
                 </Box>
-            porte médio
-        </Flex>
+                porte médio
+            </Flex>
         </Flex>
 
     );
