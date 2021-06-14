@@ -1,3 +1,4 @@
 {
-    "photo_directory": "https://amaiscpv.com/wolves/img/fotos"
+    "photo_url": "https://amaiscpv.com/wolves/img/fotos/",
+    "photo_directory": "c:/wamp64/www/wolves/webroot/img/fotos"
 }

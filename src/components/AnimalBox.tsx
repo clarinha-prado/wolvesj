@@ -23,7 +23,7 @@ export function AnimalBox({ animal }: AnimalInterface) {
             mb={['2rem', '3.3rem']}
         >
             <Image
-                src={`${config.photo_directory}/${animal.id}/0.jpg`}
+                src={`${config.photo_url}/${animal.id}/0.jpg`}
                 alt="Nome"
                 borderRadius="full"
                 mt="1rem"

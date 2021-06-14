@@ -1,5 +1,7 @@
 // import `ChakraProvider` component
 import { ChakraProvider } from "@chakra-ui/react"
+import "swiper/swiper.min.css";
+import "swiper/components/navigation/navigation.min.css"
 
 import '../styles/globals.css'
 
