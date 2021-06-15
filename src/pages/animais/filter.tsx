@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { wolvesbckApi } from "../api/wolvesbckApi";
-import { Button, Box, Center, Text } from "@chakra-ui/react";
+import { wolvesbckApi } from "../../api/wolvesbckApi";
+import { Button, Box, Center, Text, Icon } from "@chakra-ui/react";
+import { IoMdPaw } from "react-icons/io";
 import { useForm } from 'react-hook-form';
 
-import { FilterTitle } from '../components/FilterTitle';
-import { Size } from '../components/Size';
-import { Gender } from '../components/Gender';
-import { Age } from '../components/Age';
-import { Header } from '../components/Header';
-import { AnimalList } from "../components/AnimalList";
-import { Pagin } from '../components/Pagin';
+import { FilterTitle } from '../../components/FilterTitle';
+import { Size } from '../../components/Size';
+import { Gender } from '../../components/Gender';
+import { Age } from '../../components/Age';
+import { Header } from '../../components/Header';
+import { AnimalList } from "../../components/AnimalList";
+import { Pagin } from '../../components/Pagin';
 
 interface FilterFormData {
     p: string;
@@ -148,8 +149,25 @@ export default function Filter() {
                         <Age handler={handleAgesClick} values={ages} registerParam={register} />
 
                         <Center>
-                            <Button type="submit" colorScheme="blue">Buscar</Button>
+                            <Button
+                                type="submit"
+                                bgColor="#e6880e"
+                                _hover={{ bg: "blue" }}
+                                color="white"
+                                mb="1rem"
+                                minW="0"
+                                fontSize="1rem"
+                                style={{
+                                    whiteSpace: "normal",
+                                }}
+                            >
+                                <Icon as={IoMdPaw} />
+                                <Text ml={["5px", "5px", "10px"]}>
+                                    Buscar
+                                </Text>
+                            </Button>
                         </Center>
+
                     </Box>
                 </>
                 :

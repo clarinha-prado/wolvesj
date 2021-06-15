@@ -1,4 +1,4 @@
-import { Button, Icon } from "@chakra-ui/react";
+import { Button, Text, Icon } from "@chakra-ui/react";
 import { IoMdPaw } from "react-icons/io";
 import styles from './Header.module.css';
 
@@ -29,8 +29,10 @@ export function Header({ showAll, showForm }: HeaderProps) {
                         whiteSpace: "normal",
                     }}
                 >
-                    <Icon as={IoMdPaw} mr={["5px", "5px", "10px"]} />
-                    {showForm ? 'Mostrar todos' : 'Nova Busca'}
+                    <Icon as={IoMdPaw} />
+                    <Text ml={["5px", "5px", "10px"]}>
+                        {showForm ? 'Mostrar todos' : 'Nova Busca'}
+                    </Text>
                 </Button>
                 <img className={styles.logoAmais} src="/img/logo-amais.png" alt="AMAIS" />
             </div>

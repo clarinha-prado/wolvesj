@@ -50,14 +50,54 @@ export default function Animal({ animal }: AnimalProps) {
 
     SwiperCore.use([Navigation, Autoplay]);
 
+    function getAge(dob: Date) {
+        const birthDate = new Date(dob);
+        const today = new Date();
+
+        console.log("data nasc:", birthDate);
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        let monthAge = m;
+
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        if (age === 0) {
+            if (m < 0) {
+                monthAge = 12 + m;
+            } else {
+                monthAge = m;
+            }
+        }
+
+        if (age === 0) {
+            return monthAge === 1 ? (monthAge + " mês") : (monthAge + " meses");
+        } else {
+            return age === 1 ? (age + " ano") : (age + " anos");
+        }
+    }
+
     return (
         <>
-            <Flex direction="column" w="100%" maxW="1200px" >
-                <Text>{animal.nm_animal}</Text>
+            <Flex
+                direction="column"
+                w="100%"
+                maxW="1200px"
+                margin="auto"
+                pl="1rem"
+                pr="1rem"
+            >
+                <Text
+                    fontSize={["2rem", "2.5rem"]}
+                    color="#991143"
+                >
+                    {animal.nm_animal}</Text>
 
                 <Flex direction={["column", "row"]}>
 
-                    <Box w="40%">
+                    <Box w="50%" mr="2rem">
                         <Swiper
                             slidesPerView={1}
                             navigation={true}
@@ -69,8 +109,8 @@ export default function Animal({ animal }: AnimalProps) {
                             onSlideChange={() => console.log('slide change')}
                             onSwiper={(swiper) => console.log(swiper)}
                         >
-                            {animal.photos.map((photo) =>
-                                <SwiperSlide>
+                            {animal.photos.map((photo, index) =>
+                                <SwiperSlide key={index}>
                                     <Image
                                         w="100%"
                                         src={photo}
@@ -81,24 +121,26 @@ export default function Animal({ animal }: AnimalProps) {
 
                     </Box>
 
-                    <Box>
-                        <Table variant="striped" colorScheme="teal">
+                    <Box w="50%" >
+                        <Table variant="striped" colorScheme="gray" pr="1rem">
                             <Tbody>
                                 <Tr>
-                                    <Td>{animal.porte}</Td>
+                                    <Td>{animal.porte === 0 ? "Fêmea" : "Macho"}</Td>
                                 </Tr>
                                 <Tr>
                                     <Td>{animal.raca}</Td>
                                 </Tr>
                                 <Tr>
-                                    <Td>XX anos</Td>
+                                    <Td>{getAge(animal.dt_provavel_nasc)}</Td>
                                 </Tr>
                                 <Tr>
-                                    <Td>Porte {animal.porte}</Td>
+                                    <Td>Porte {animal.porte === 0 ? "pequeno" :
+                                        animal.porte === 1 ? "médio" : "grande"}</Td>
                                 </Tr>
-                                <Tr>
-                                    <Td>Porte {animal.castrado}</Td>
-                                </Tr>
+                                {animal.castrado === 0 &&
+                                    <Tr>
+                                        <Td>Castrado</Td>
+                                    </Tr>}
                             </Tbody>
                         </Table>
                         <Box>Características: {animal.caracteristicas}</Box>
@@ -138,7 +180,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
     // params contains the post `id`.
     // If the route is like /posts/1, then params.id is 1
-    const animal = await wolvesbckApi.get('/animais/1')
+    const animal = await wolvesbckApi.get(`/animais/${params.id}`)
         .then((response) => response.data);
 
     if (!animal) {
@@ -148,7 +190,7 @@ export async function getStaticProps({ params }) {
     }
 
     // obter lista de fotos
-    const dir = `${config.photo_directory}${"/1"}`;
+    const dir = `${config.photo_directory}/${params.id}`;
     const files = fs.readdirSync(dir);
 
     let photos: string[] = [];
