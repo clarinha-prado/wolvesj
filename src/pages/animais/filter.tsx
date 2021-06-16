@@ -11,6 +11,7 @@ import { Age } from '../../components/Age';
 import { Header } from '../../components/Header';
 import { AnimalList } from "../../components/AnimalList";
 import { Pagin } from '../../components/Pagin';
+import { useRouter } from 'next/router'
 
 interface FilterFormData {
     p: string;
@@ -45,6 +46,8 @@ interface AnimalDTO {
 
 export default function Filter() {
 
+    const [isInitialized, setIsInitialized] = useState(false);
+
     const [showForm, setShowForm] = useState(true);
     const [animals, setAnimals] = useState<IAnimalList>({ data: null });
     const [selectAll, setSelectAll] = useState(false)
@@ -59,26 +62,104 @@ export default function Filter() {
     // e o handleSubmit para chamar uma função q receberá os dados do formulário
     const { register, handleSubmit, setValue } = useForm();
 
+    const router = useRouter()
+
     // esta função é chamada pelo handleSubmit() do react-hook-forms quando o POST é feito
     const onSubmit = (filterFormData: FilterFormData) => {
-        console.log(filterFormData);
 
-        console.log("currentPage=", currentPage)
-        wolvesbckApi.post('/animais', filterFormData, {
-            params: { newPage: currentPage - 1 }
+        let sizesParam = sizes[0] ? 4 : 0;
+        sizesParam += sizes[1] ? 2 : 0;
+        sizesParam += sizes[2] ? 1 : 0;
+
+        let gendersParam = genders[0] ? 2 : 0;
+        gendersParam += genders[1] ? 1 : 0;
+
+        let agesParam = ages[0] ? 8 : 0;
+        agesParam += ages[1] ? 4 : 0;
+        agesParam += ages[2] ? 2 : 0;
+        agesParam += ages[3] ? 1 : 0;
+
+        console.log("sizes=", sizes, " gender=", genders, " ages=", ages);
+
+        wolvesbckApi.get('/animais/filter', {
+            params: {
+                sizes: sizesParam,
+                genders: gendersParam,
+                ages: agesParam,
+                newPage: currentPage - 1
+            }
         }).then(
             response => {
                 console.log(response.data)
                 setAnimals(response);
+                const params = { sizes, genders, ages };
+                sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(params));
                 setShowForm(false);
             });
     }
 
     // effects
     useEffect(() => {
+        if (!isInitialized) {
+            setIsInitialized(true);
+
+            // se a página foi chamada sem parâmetros na query string
+            if (JSON.stringify(router.query) === '{}') {
+                let data = sessionStorage.getItem('@wolvesj-searchParams');
+                // se existe uma sessão ativa
+                if (data) {
+                    let params = JSON.parse(data);
+                    console.log("dados da sessão:", params);
+
+                    let sizesParam = params.sizes[0] ? 4 : 0;
+                    sizesParam += params.sizes[1] ? 2 : 0;
+                    sizesParam += params.sizes[2] ? 1 : 0;
+
+                    let gendersParam = params.genders[0] ? 2 : 0;
+                    gendersParam += params.genders[1] ? 1 : 0;
+
+                    let agesParam = params.ages[0] ? 8 : 0;
+                    agesParam += params.ages[1] ? 4 : 0;
+                    agesParam += params.ages[2] ? 2 : 0;
+                    agesParam += params.ages[3] ? 1 : 0;
+
+                    console.log("sizes=", params.sizes, " gender=", params.genders, " ages=", params.ages);
+
+                    wolvesbckApi.get('/animais/filter', {
+                        params: {
+                            sizes: sizesParam,
+                            genders: gendersParam,
+                            ages: agesParam,
+                            newPage: currentPage - 1
+                        }
+                    }).then(
+                        response => {
+                            console.log(response.data)
+                            setAnimals(response);
+                            const params = { sizes, genders, ages };
+                            sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(params));
+                            setShowForm(false);
+
+                            // atualiza estado com os dados da sessão
+                            setSizes(params.sizes);
+                            setGenders(params.genders);
+                            setAges(params.ages);
+                        });
+                } else {
+                    // se não existe sessão ativa, é pra mostrar o formulário
+                    setShowForm(true);
+                }
+            }
+        }
+    }, [isInitialized, setSizes, setGenders, setAges]);
+
+    useEffect(() => {
+
+        // se não for pra mostrar o formulário, chama onSubmit
         if (!showForm) {
             handleSubmit(onSubmit)();
         }
+
     }, [currentPage]);
 
     const requestNewPage = (newPage: number) => {
@@ -97,6 +178,11 @@ export default function Filter() {
             setValue("de1a5", true);
             setValue("de5a10", true);
             setValue("acima10", true);
+
+            setSizes([true, true, true]);
+            setGenders([true, true]);
+            setAges([true, true, true, true]);
+
             handleSubmit(onSubmit)();
         } else {
             setSelectAll(false);
@@ -128,54 +214,60 @@ export default function Filter() {
     return (
         <>
             <Header showAll={showAll} showForm={showForm} />
-            {showForm ?
+            {isInitialized ?
                 <>
-                    <Text
-                        textAlign='center'
-                        fontSize='1.9rem'
-                    >
-                        Escolha as características
-                    </Text>
-
-                    <Box
-                        as="form"
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
-                        <FilterTitle name="Porte" />
-                        <Size handler={handleSizesClick} values={sizes} registerParam={register} />
-                        <FilterTitle name="Gênero" />
-                        <Gender handler={handleGendersClick} values={genders} registerParam={register} />
-                        <FilterTitle name="Idade" />
-                        <Age handler={handleAgesClick} values={ages} registerParam={register} />
-
-                        <Center>
-                            <Button
-                                type="submit"
-                                bgColor="#e6880e"
-                                _hover={{ bg: "blue" }}
-                                color="white"
-                                mb="1rem"
-                                minW="0"
-                                fontSize="1rem"
-                                style={{
-                                    whiteSpace: "normal",
-                                }}
+                    {showForm ?
+                        <>
+                            <Text
+                                textAlign='center'
+                                fontSize='1.9rem'
                             >
-                                <Icon as={IoMdPaw} />
-                                <Text ml={["5px", "5px", "10px"]}>
-                                    Buscar
-                                </Text>
-                            </Button>
-                        </Center>
+                                Escolha as características
+                            </Text>
 
-                    </Box>
-                </>
+                            <Box
+                                as="form"
+                                onSubmit={handleSubmit(onSubmit)}
+                            >
+                                <FilterTitle name="Porte" />
+                                <Size handler={handleSizesClick} values={sizes} registerParam={register} />
+                                <FilterTitle name="Gênero" />
+                                <Gender handler={handleGendersClick} values={genders} registerParam={register} />
+                                <FilterTitle name="Idade" />
+                                <Age handler={handleAgesClick} values={ages} registerParam={register} />
+
+                                <Center>
+                                    <Button
+                                        type="submit"
+                                        bgColor="#e6880e"
+                                        _hover={{ bg: "blue" }}
+                                        color="white"
+                                        mb="1rem"
+                                        minW="0"
+                                        fontSize="1rem"
+                                        style={{
+                                            whiteSpace: "normal",
+                                        }}
+                                    >
+                                        <Icon as={IoMdPaw} />
+                                        <Text ml={["5px", "5px", "10px"]}>
+                                            Buscar
+                                        </Text>
+                                    </Button>
+                                </Center>
+
+                            </Box>
+                        </>
+                        :
+                        <>
+                            <AnimalList queryResponse={animals.data.content} />
+                            <Pagin page={animals.data} requestNewPage={requestNewPage} />
+                        </>
+                    } </>
                 :
-                <>
-                    <AnimalList queryResponse={animals.data.content} />
-                    <Pagin page={animals.data} requestNewPage={requestNewPage} />
-                </>
+                <h1>Carregando página...</h1>
             }
         </>
     );
 }
+

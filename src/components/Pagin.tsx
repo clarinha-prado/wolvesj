@@ -7,7 +7,6 @@ import {
   PageGroup,
   usePaginator
 } from "chakra-paginator";
-import { useEffect } from "react";
 
 interface IPaginatorProps {
   page: {

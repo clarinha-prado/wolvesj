@@ -10,6 +10,7 @@ interface HeaderProps {
 export function Header({ showAll, showForm }: HeaderProps) {
 
     function handleClick() {
+        // se showForm busca todos animais, senão volta para o formulário
         showAll();
     }
 

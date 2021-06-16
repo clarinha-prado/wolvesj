@@ -1,16 +1,14 @@
 import {
-    Table,
-    Tbody,
-    Tr,
-    Td
+    Table, Tbody, Tr, Td,
+    Center, Box, Text, Image, Flex
 } from "@chakra-ui/react";
 import { useRouter } from 'next/router';
-import { wolvesbckApi } from "../../api/wolvesbckApi";
-import { Center, Box, Text, Image, Flex } from "@chakra-ui/react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Navigation, Autoplay } from 'swiper';
 import fs from 'fs';
 
+import { getAge } from '../../utils/getAge';
+import { wolvesbckApi } from "../../api/wolvesbckApi";
 import config from '../../../wolvesj-config.json';
 import { useEffect } from 'react';
 
@@ -50,35 +48,6 @@ export default function Animal({ animal }: AnimalProps) {
 
     SwiperCore.use([Navigation, Autoplay]);
 
-    function getAge(dob: Date) {
-        const birthDate = new Date(dob);
-        const today = new Date();
-
-        console.log("data nasc:", birthDate);
-
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        let monthAge = m;
-
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        if (age === 0) {
-            if (m < 0) {
-                monthAge = 12 + m;
-            } else {
-                monthAge = m;
-            }
-        }
-
-        if (age === 0) {
-            return monthAge === 1 ? (monthAge + " mês") : (monthAge + " meses");
-        } else {
-            return age === 1 ? (age + " ano") : (age + " anos");
-        }
-    }
-
     return (
         <>
             <Flex
@@ -91,6 +60,7 @@ export default function Animal({ animal }: AnimalProps) {
             >
                 <Text
                     fontSize={["2rem", "2.5rem"]}
+                    fontWeight="bold"
                     color="#991143"
                 >
                     {animal.nm_animal}</Text>
@@ -102,7 +72,7 @@ export default function Animal({ animal }: AnimalProps) {
                             slidesPerView={1}
                             navigation={true}
                             autoplay={{
-                                "delay": 3500,
+                                "delay": 4000,
                                 "disableOnInteraction": false
                             }}
                             autoHeight
@@ -122,10 +92,15 @@ export default function Animal({ animal }: AnimalProps) {
                     </Box>
 
                     <Box w="50%" >
-                        <Table variant="striped" colorScheme="gray" pr="1rem">
+                        <Table
+                            variant="striped"
+                            colorScheme="gray"
+                            pr="1rem"
+                            size="sm"
+                        >
                             <Tbody>
                                 <Tr>
-                                    <Td>{animal.porte === 0 ? "Fêmea" : "Macho"}</Td>
+                                    <Td>{animal.sexo === 0 ? "Fêmea" : "Macho"}</Td>
                                 </Tr>
                                 <Tr>
                                     <Td>{animal.raca}</Td>
@@ -143,18 +118,35 @@ export default function Animal({ animal }: AnimalProps) {
                                     </Tr>}
                             </Tbody>
                         </Table>
-                        <Box>Características: {animal.caracteristicas}</Box>
+                        <Box
+                            ml="0.25rem"
+                            mr="0.25rem"
+                            mt="0.5rem"
+                        >
+                            <Text
+                                fontWeight="bold"
+                                fontSize={["1.2rem", "1.5rem"]}
+                                color="#991143"
+                            >
+                                Características
+                            </Text>
+                            <Text textAlign="justify">
+                                {animal.caracteristicas}
+                            </Text>
+                        </Box>
                     </Box>
                 </Flex>
-                <Text>
-                    Histórico
+                <Text
+                    mt="1rem"
+                    fontWeight="bold"
+                    fontSize={["1.2rem", "1.5rem"]}
+                    color="#991143"
+                >                    Histórico
                 </Text>
-                <Text>
+                <Text textAlign="justify">
                     {animal.historia}
                 </Text>
             </Flex>
-
-            <Center>Paginação</Center>
         </>
     );
 }
@@ -172,7 +164,7 @@ export async function getStaticPaths() {
                     params: { id: animal.id },
                 })) */
 
-    const paths = [{ params: { "id": "1" } }]
+    const paths = [{ params: { "id": "0" } }]
     return { paths, fallback: 'blocking' }
 }
 

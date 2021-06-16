@@ -2,6 +2,7 @@
 import { FiHeart } from 'react-icons/fi';
 import { Box, Text, Image, Flex, Link } from "@chakra-ui/react";
 
+import { getAge } from '../utils/getAge';
 import config from '../../wolvesj-config.json';
 
 interface AnimalInterface {
@@ -57,11 +58,12 @@ export function AnimalBox({ animal }: AnimalInterface) {
                 color="#2B3332"
                 mt="-0.3rem"
             >
-                3 anos
+                {getAge(animal.dt_provavel_nasc)}
                 <Box ml="0.4rem" mr="0.4rem">
                     <FiHeart />
                 </Box>
-                porte médio
+                Porte {animal.porte === 0 ? "pequeno" :
+                    animal.porte === 1 ? "médio" : "grande"}
             </Flex>
         </Flex>
 
