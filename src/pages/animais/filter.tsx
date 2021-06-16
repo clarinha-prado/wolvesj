@@ -101,7 +101,6 @@ export default function Filter() {
     // effects
     useEffect(() => {
         if (!isInitialized) {
-            setIsInitialized(true);
 
             // se a página foi chamada sem parâmetros na query string
             if (JSON.stringify(router.query) === '{}') {
@@ -144,9 +143,11 @@ export default function Filter() {
                             setSizes(params.sizes);
                             setGenders(params.genders);
                             setAges(params.ages);
+                            setIsInitialized(true);
                         });
                 } else {
                     // se não existe sessão ativa, é pra mostrar o formulário
+                    setIsInitialized(true);
                     setShowForm(true);
                 }
             }
@@ -263,7 +264,8 @@ export default function Filter() {
                             <AnimalList queryResponse={animals.data.content} />
                             <Pagin page={animals.data} requestNewPage={requestNewPage} />
                         </>
-                    } </>
+                    }
+                </>
                 :
                 <h1>Carregando página...</h1>
             }
