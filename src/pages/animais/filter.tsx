@@ -11,7 +11,6 @@ import { Age } from '../../components/Age';
 import { Header } from '../../components/Header';
 import { AnimalList } from "../../components/AnimalList";
 import { Pagin } from '../../components/Pagin';
-import { useRouter } from 'next/router'
 
 interface FilterFormData {
     p: string;
@@ -44,115 +43,101 @@ interface AnimalDTO {
     porte: number;
 }
 
+interface SessionParams {
+    sizes: number;
+    genders: number;
+    ages: number;
+    page: number;
+}
+
 export default function Filter() {
 
+    // usada p verificar se existe sessão quando o componente é carregado
     const [isInitialized, setIsInitialized] = useState(false);
 
+    // mostrar o formulário de busca ou a lista de animais
     const [showForm, setShowForm] = useState(true);
-    const [animals, setAnimals] = useState<IAnimalList>({ data: null });
-    const [selectAll, setSelectAll] = useState(false)
 
+    // lista de animais e paginação
+    const [animals, setAnimals] = useState<IAnimalList>({ data: null });
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // opções do formulário
     const [sizes, setSizes] = useState([false, false, false]);
     const [genders, setGenders] = useState([false, false]);
     const [ages, setAges] = useState([false, false, false, false]);
 
-    const [currentPage, setCurrentPage] = useState(1);
-
-    // obtém do useForm() o register para definir o nome dos campos do formulário
-    // e o handleSubmit para chamar uma função q receberá os dados do formulário
+    // obtém do useForm(): 
+    // register: define nome dos campos e chama validação
+    // handleSubmit: chamar função q recebe os dados do formulário
+    // setValue: seleciona os checkboxes via código
     const { register, handleSubmit, setValue } = useForm();
-
-    const router = useRouter()
 
     // esta função é chamada pelo handleSubmit() do react-hook-forms quando o POST é feito
     const onSubmit = (filterFormData: FilterFormData) => {
 
-        let sizesParam = sizes[0] ? 4 : 0;
-        sizesParam += sizes[1] ? 2 : 0;
-        sizesParam += sizes[2] ? 1 : 0;
+        // converte parametros do estado para number para reduzir a qtde de params
+        const params = convertParams();
 
-        let gendersParam = genders[0] ? 2 : 0;
-        gendersParam += genders[1] ? 1 : 0;
+        // busca dados no banco de dados através do backend
+        wolvesbckApi.get('/animais/filter', { params })
+            .then(
+                response => {
+                    console.log(response.data)
 
-        let agesParam = ages[0] ? 8 : 0;
-        agesParam += ages[1] ? 4 : 0;
-        agesParam += ages[2] ? 2 : 0;
-        agesParam += ages[3] ? 1 : 0;
+                    // armazena parâmetros de busca na sessão do browser
+                    const session = {
+                        sizes,
+                        genders,
+                        ages,
+                        page: 0
+                    };
+                    sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(session));
 
-        console.log("sizes=", sizes, " gender=", genders, " ages=", ages);
-
-        wolvesbckApi.get('/animais/filter', {
-            params: {
-                sizes: sizesParam,
-                genders: gendersParam,
-                ages: agesParam,
-                newPage: currentPage - 1
-            }
-        }).then(
-            response => {
-                console.log(response.data)
-                setAnimals(response);
-                const params = { sizes, genders, ages };
-                sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(params));
-                setShowForm(false);
-            });
+                    // atualiza estado
+                    setAnimals(response);
+                    setShowForm(false);
+                });
     }
 
-    // effects
+    // inicialização: se existir sessão no browser, busca dados
     useEffect(() => {
+
         if (!isInitialized) {
 
-            // se a página foi chamada sem parâmetros na query string
-            if (JSON.stringify(router.query) === '{}') {
-                let data = sessionStorage.getItem('@wolvesj-searchParams');
-                // se existe uma sessão ativa
-                if (data) {
-                    let params = JSON.parse(data);
-                    console.log("dados da sessão:", params);
+            // verifica se existe uma sessão ativa
+            let data = sessionStorage.getItem('@wolvesj-searchParams');
+            if (data) {
+                // converte dados para JSON
+                let session = JSON.parse(data);
+                console.log("dados da sessão:", session);
 
-                    let sizesParam = params.sizes[0] ? 4 : 0;
-                    sizesParam += params.sizes[1] ? 2 : 0;
-                    sizesParam += params.sizes[2] ? 1 : 0;
+                // converte parametros boleanos da sessão para parametros numerico pro backend
+                const params = convertParams(session);
 
-                    let gendersParam = params.genders[0] ? 2 : 0;
-                    gendersParam += params.genders[1] ? 1 : 0;
-
-                    let agesParam = params.ages[0] ? 8 : 0;
-                    agesParam += params.ages[1] ? 4 : 0;
-                    agesParam += params.ages[2] ? 2 : 0;
-                    agesParam += params.ages[3] ? 1 : 0;
-
-                    console.log("sizes=", params.sizes, " gender=", params.genders, " ages=", params.ages);
-
-                    wolvesbckApi.get('/animais/filter', {
-                        params: {
-                            sizes: sizesParam,
-                            genders: gendersParam,
-                            ages: agesParam,
-                            newPage: currentPage - 1
-                        }
-                    }).then(
+                // busca os dados
+                wolvesbckApi.get('/animais/filter', { params })
+                    .then(
                         response => {
                             console.log(response.data)
-                            setAnimals(response);
-                            const params = { sizes, genders, ages };
-                            sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(params));
-                            setShowForm(false);
+
+                            // armazena dados retornados no estado
+                            setAnimals((value) => response);
+                            setShowForm((value) => false);
 
                             // atualiza estado com os dados da sessão
-                            setSizes(params.sizes);
-                            setGenders(params.genders);
-                            setAges(params.ages);
-                            setIsInitialized(true);
+                            setSizes((value) => session.sizes);
+                            setGenders((value) => session.genders);
+                            setAges((value) => session.ages);
+                            setIsInitialized((value) => true);
                         });
-                } else {
-                    // se não existe sessão ativa, é pra mostrar o formulário
-                    setIsInitialized(true);
-                    setShowForm(true);
-                }
+            } else {
+                // se não existe sessão ativa, é pra mostrar o formulário
+                setIsInitialized((value) => true);
+                setShowForm((value) => true);
             }
         }
-    }, [isInitialized, setSizes, setGenders, setAges]);
+    }, []);
 
     useEffect(() => {
 
@@ -163,12 +148,45 @@ export default function Filter() {
 
     }, [currentPage]);
 
+    function convertParams(session?: SessionParams, pageParam?: number) {
+
+        let usedParam = session ? session.sizes : sizes;
+
+        let sizesParam = usedParam[0] ? 4 : 0;
+        sizesParam += usedParam[1] ? 2 : 0;
+        sizesParam += usedParam[2] ? 1 : 0;
+
+        usedParam = session ? session.genders : genders;
+
+        let gendersParam = usedParam[0] ? 2 : 0;
+        gendersParam += usedParam[1] ? 1 : 0;
+
+        usedParam = session ? session.ages : ages;
+
+        let agesParam = usedParam[0] ? 8 : 0;
+        agesParam += usedParam[1] ? 4 : 0;
+        agesParam += usedParam[2] ? 2 : 0;
+        agesParam += usedParam[3] ? 1 : 0;
+
+        const page = pageParam ?? session?.page ?? 0;
+
+        console.log("convertParams()", session?.sizes);
+        console.log("sizes=", sizes, "\ngender=", genders, "\nages=", ages, "\npage:", page);
+
+        return {
+            sizes: sizesParam,
+            genders: gendersParam,
+            ages: agesParam,
+            page: page
+        };
+    }
+
     const requestNewPage = (newPage: number) => {
         console.log("carregar página ", newPage);
         setCurrentPage(newPage);
     }
 
-    const showAll = (): void => {
+    const headerSearch = (): void => {
         if (showForm) {
             setValue("p", true);
             setValue("m", true);
@@ -184,14 +202,31 @@ export default function Filter() {
             setGenders([true, true]);
             setAges([true, true, true, true]);
 
-            handleSubmit(onSubmit)();
+            wolvesbckApi.get('/animais/filter', {
+                params: {
+                    sizes: 7,
+                    genders: 3,
+                    ages: 15,
+                }
+            }).then(
+                response => {
+                    console.log(response.data);
+                    const params = {
+                        sizes: [true, true, true],
+                        genders: [true, true],
+                        ages: [true, true, true, true]
+                    };
+                    sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(params));
+                    setAnimals(response);
+                    setShowForm(false);
+                });
         } else {
-            setSelectAll(false);
             setShowForm(true);
         }
     };
 
     const handleSizesClick = (index: number) => {
+        console.log("===============", sizes);
         let newSizes = sizes.slice();
         newSizes[index] = !sizes[index];
 
@@ -214,7 +249,7 @@ export default function Filter() {
 
     return (
         <>
-            <Header showAll={showAll} showForm={showForm} />
+            <Header headerSearch={headerSearch} showForm={showForm} />
             {isInitialized ?
                 <>
                     {showForm ?

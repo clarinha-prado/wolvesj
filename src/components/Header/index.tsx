@@ -3,15 +3,15 @@ import { IoMdPaw } from "react-icons/io";
 import styles from './Header.module.css';
 
 interface HeaderProps {
-    showAll: () => void;
+    headerSearch: () => void;
     showForm: boolean;
 }
 
-export function Header({ showAll, showForm }: HeaderProps) {
+export function Header({ headerSearch, showForm }: HeaderProps) {
 
     function handleClick() {
         // se showForm busca todos animais, senão volta para o formulário
-        showAll();
+        headerSearch();
     }
 
     return (

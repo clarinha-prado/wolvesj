@@ -1,6 +1,6 @@
 import {
-    Table, Tbody, Tr, Td,
-    Center, Box, Text, Image, Flex
+    Table, Tbody, Tr, Td, Link,
+    Center, Box, Text, Image, Flex, SimpleGrid
 } from "@chakra-ui/react";
 import { useRouter } from 'next/router';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -42,9 +42,9 @@ export default function Animal({ animal }: AnimalProps) {
     }
 
     useEffect(() => {
-        // obter nome de todos os arquivos de imagens do animal
+        // atualizar o próximo e anterior
 
-    }, []);
+    });
 
     SwiperCore.use([Navigation, Autoplay]);
 
@@ -147,6 +147,13 @@ export default function Animal({ animal }: AnimalProps) {
                     {animal.historia}
                 </Text>
             </Flex>
+            <Center>
+                <SimpleGrid columns={3} spacing={10}>
+                    <Link href="#">anterior</Link>
+                    <Link href="/animais/filter">voltar</Link>
+                    <Link href="#">próximo</Link>
+                </SimpleGrid>
+            </Center>
         </>
     );
 }
@@ -187,8 +194,8 @@ export async function getStaticProps({ params }) {
 
     let photos: string[] = [];
     for (const file of files) {
-        photos.push(config.photo_url + animal.id + '/' + file);
-        console.log(config.photo_url + animal.id + '/' + file);
+        photos.push(config.photo_url + '/' + animal.id + '/' + file);
+        console.log(config.photo_url + '/' + animal.id + '/' + file);
     }
 
     animal.photos = photos;
