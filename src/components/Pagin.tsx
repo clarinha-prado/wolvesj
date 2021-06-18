@@ -31,7 +31,6 @@ export function Pagin(props: IPaginatorProps) {
     // -> request new data using the page number
     setCurrentPage(nextPage);
     props.requestNewPage(nextPage);
-    console.log("request new data with ->", nextPage);
   };
 
   const outerLimit = 1;

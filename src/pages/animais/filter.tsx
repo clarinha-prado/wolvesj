@@ -83,14 +83,14 @@ export default function Filter() {
         wolvesbckApi.get('/animais/filter', { params })
             .then(
                 response => {
-                    console.log(response.data)
+                    console.log("response: ", response.data.content)
 
                     // armazena parâmetros de busca na sessão do browser
                     const session = {
                         sizes,
                         genders,
                         ages,
-                        page: 0
+                        page: currentPage
                     };
                     sessionStorage.setItem('@wolvesj-searchParams', JSON.stringify(session));
 
@@ -110,7 +110,7 @@ export default function Filter() {
             if (data) {
                 // converte dados para JSON
                 let session = JSON.parse(data);
-                console.log("dados da sessão:", session);
+                console.log("dados obtidos da sessão:", session);
 
                 // converte parametros boleanos da sessão para parametros numerico pro backend
                 const params = convertParams(session);
@@ -143,12 +143,13 @@ export default function Filter() {
 
         // se não for pra mostrar o formulário, chama onSubmit
         if (!showForm) {
+            console.log("detectada mudança de página!!!");
             handleSubmit(onSubmit)();
         }
 
     }, [currentPage]);
 
-    function convertParams(session?: SessionParams, pageParam?: number) {
+    function convertParams(session?: SessionParams) {
 
         let usedParam = session ? session.sizes : sizes;
 
@@ -168,21 +169,21 @@ export default function Filter() {
         agesParam += usedParam[2] ? 2 : 0;
         agesParam += usedParam[3] ? 1 : 0;
 
-        const page = pageParam ?? session?.page ?? 0;
+        const page = session?.page ?? currentPage ?? 0;
 
-        console.log("convertParams()", session?.sizes);
+        console.log("na função convertParams() - sessão=", session?.sizes, " - página=", page);
         console.log("sizes=", sizes, "\ngender=", genders, "\nages=", ages, "\npage:", page);
 
         return {
             sizes: sizesParam,
             genders: gendersParam,
             ages: agesParam,
-            page: page
+            page: page - 1
         };
     }
 
     const requestNewPage = (newPage: number) => {
-        console.log("carregar página ", newPage);
+        console.log("carregar nova página ", newPage);
         setCurrentPage(newPage);
     }
 

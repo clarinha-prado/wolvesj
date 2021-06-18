@@ -1,5 +1,5 @@
 import {
-    Table, Tbody, Tr, Td, Link,
+    Table, Tbody, Tr, Td, Button,
     Center, Box, Text, Image, Flex, SimpleGrid
 } from "@chakra-ui/react";
 import { useRouter } from 'next/router';
@@ -114,7 +114,7 @@ export default function Animal({ animal }: AnimalProps) {
                                 </Tr>
                                 {animal.castrado === 0 &&
                                     <Tr>
-                                        <Td>Castrado</Td>
+                                        <Td>{animal.sexo === 0 ? "Castrada" : "Castrado"}</Td>
                                     </Tr>}
                             </Tbody>
                         </Table>
@@ -147,11 +147,40 @@ export default function Animal({ animal }: AnimalProps) {
                     {animal.historia}
                 </Text>
             </Flex>
-            <Center>
+            <Center mt="1rem" mb="3rem">
                 <SimpleGrid columns={3} spacing={10}>
-                    <Link href="#">anterior</Link>
-                    <Link href="/animais/filter">voltar</Link>
-                    <Link href="#">próximo</Link>
+                    <Button
+                        href="#"
+                        w="7"
+                        h="7"
+                        bg="gray.200"
+                        fontSize="sm"
+                        _hover={{ bg: "gray.400" }}
+                    >
+                        &lt;&lt;
+                    </Button>
+                    <Button
+                        href="#"
+                        w="14"
+                        h="7"
+                        bg="#991143"
+                        color="white"
+                        fontSize="sm"
+                        _hover={{ bg: "blue" }}
+                    >
+                        voltar
+                    </Button>
+                    <Button
+                        href="#"
+                        w="7"
+                        h="7"
+                        justifySelf="end"
+                        bg="gray.200"
+                        fontSize="sm"
+                        _hover={{ bg: "gray.400" }}
+                    >
+                        &gt;&gt;
+                    </Button>
                 </SimpleGrid>
             </Center>
         </>
