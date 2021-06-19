@@ -10,7 +10,7 @@ import fs from 'fs';
 import { getAge } from '../../utils/getAge';
 import { wolvesbckApi } from "../../api/wolvesbckApi";
 import config from '../../../wolvesj-config.json';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AnimalProps {
     animal: AnimalInterface;
@@ -34,6 +34,11 @@ interface AnimalInterface {
 
 export default function Animal({ animal }: AnimalProps) {
 
+    const [id, setId] = useState(animal.id);
+    const [idsList, setIdsList] = useState([]);
+    const [previous, setPrevious] = useState<number>(null)
+    const [next, setNext] = useState<number>(null)
+
     // If the page is not yet generated, this will be displayed
     // initially until getStaticProps() finishes running
     const router = useRouter()
@@ -42,11 +47,75 @@ export default function Animal({ animal }: AnimalProps) {
     }
 
     useEffect(() => {
-        // atualizar o próximo e anterior
+        console.log("executando useEffect(..., [idsList,id]) - id=", id);
 
-    });
+        let _previous = null;
+        let _next = null;
+        let found = false;
+        for (let i = 0; i < idsList.length; i++) {
+
+            if (found) {
+                _next = idsList[i];
+                break;
+            }
+
+            if (idsList[i] === id) {
+                found = true;
+            } else {
+                _previous = idsList[i];
+            }
+        };
+
+        setPrevious(_previous);
+        setNext(_next);
+    }, [idsList, id]);
+
+    useEffect(() => {
+        console.log("executando useEffect()");
+
+        // verifica se existe uma sessão ativa
+        let data = sessionStorage.getItem('@wolvesj-searchParams');
+        if (data) {
+            // converte dados para JSON
+            let session = JSON.parse(data);
+            console.log("dados obtidos da sessão:", session);
+
+            // converte parametros boleanos da sessão para parametros numerico pro backend
+            let sizesParam = session.sizes[0] ? 4 : 0;
+            sizesParam += session.sizes[1] ? 2 : 0;
+            sizesParam += session.sizes[2] ? 1 : 0;
+
+            let gendersParam = session.genders[0] ? 2 : 0;
+            gendersParam += session.genders[1] ? 1 : 0;
+
+            let agesParam = session.ages[0] ? 8 : 0;
+            agesParam += session.ages[1] ? 4 : 0;
+            agesParam += session.ages[2] ? 2 : 0;
+            agesParam += session.ages[3] ? 1 : 0;
+
+            const params = {
+                sizes: sizesParam,
+                genders: gendersParam,
+                ages: agesParam,
+            };
+
+            // buscar lista de ids
+            wolvesbckApi.get("/animais/ids", { params })
+                .then((response) => {
+                    console.log("lista de ids retornada:", response.data);
+                    setIdsList(() => response.data);
+                });
+        }
+    }, []);
 
     SwiperCore.use([Navigation, Autoplay]);
+
+    function changePage(direction: number) {
+        let _newPage: number;
+        direction === 0 ? _newPage = previous : _newPage = next;
+        router.push(`/animais/${_newPage}`);
+        setId(_newPage);
+    }
 
     return (
         <>
@@ -155,9 +224,11 @@ export default function Animal({ animal }: AnimalProps) {
                         h="7"
                         bg="gray.200"
                         fontSize="sm"
+                        disabled={previous ? false : true}
+                        onClick={() => changePage(0)}
                         _hover={{ bg: "gray.400" }}
                     >
-                        &lt;&lt;
+                        {previous}&lt;&lt;
                     </Button>
                     <Button
                         href="#"
@@ -166,6 +237,7 @@ export default function Animal({ animal }: AnimalProps) {
                         bg="#991143"
                         color="white"
                         fontSize="sm"
+                        onClick={() => router.push("/animais/filter")}
                         _hover={{ bg: "blue" }}
                     >
                         voltar
@@ -177,9 +249,11 @@ export default function Animal({ animal }: AnimalProps) {
                         justifySelf="end"
                         bg="gray.200"
                         fontSize="sm"
+                        disabled={next ? false : true}
+                        onClick={() => changePage(1)}
                         _hover={{ bg: "gray.400" }}
                     >
-                        &gt;&gt;
+                        &gt;&gt;{next}
                     </Button>
                 </SimpleGrid>
             </Center>
